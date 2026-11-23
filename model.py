@@ -80,3 +80,17 @@ def sample_with_temperature(logits, temperature):
 
         return torch.multinomial(probs, num_samples=1).item()
 
+# Step 7 - top_k_filter
+def top_k_filter(logits, k):
+    # TODO: keep the k largest entries of logits and set the rest to -inf.
+    if k> logits.shape[-1] : 
+        return logits
+    topk_val , topk_index  = torch.topk(logits, k=k)
+
+    mask = torch.zeros_like(logits)
+    mask[topk_index] = 1
+    mask = mask.to(dtype = torch.bool)
+    logits = logits.masked_fill(~mask, -float("inf"))
+    
+    return logits
+
