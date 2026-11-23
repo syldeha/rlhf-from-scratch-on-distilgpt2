@@ -249,3 +249,15 @@ def collate_lm_batch(batch, pad_id):
         "attention_mask" : attention_mask
     }
 
+# Step 18 - iterate_minibatches
+import random
+
+def iterate_minibatches(examples, batch_size, seed=0):
+    rng = random.Random(seed)
+
+    shuffled = examples.copy()
+    rng.shuffle(shuffled)
+
+    for start in range(0, len(shuffled), batch_size):
+        yield shuffled[start:start + batch_size]
+
