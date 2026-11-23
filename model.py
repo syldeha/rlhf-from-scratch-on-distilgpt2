@@ -180,3 +180,31 @@ def build_labels(input_ids):
     
     return input_ids.copy()
 
+# Step 14 - mask_prompt_labels
+def mask_prompt_labels(labels, prompt_length):
+    # TODO: replace the first prompt_length entries of labels with -100 and return the new list
+    labels[:prompt_length] = -100
+
+    return labels
+
+# Step 15 - pad_batch
+def pad_batch(sequences, pad_id):
+    # TODO: right-pad a list of token id sequences to the longest length using pad_id
+    
+    max_len = 0
+    for seq in sequences : 
+        max_len = max(max_len, len(seq))
+    sequences = [torch.tensor(seq) for seq in sequences]
+    
+
+
+    # apply the padding 
+
+    sequences= torch.nn.utils.rnn.pad_sequence(
+        sequences, 
+        batch_first = True,
+        padding_value = pad_id
+    )
+
+    return sequences.tolist()
+
