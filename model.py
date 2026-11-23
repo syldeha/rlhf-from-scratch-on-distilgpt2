@@ -157,7 +157,7 @@ def format_example(example):
 # Step 11 - apply_template
 def apply_template(examples):
     # TODO: apply format_example to each item in examples and return the list of strings.
-    output = [example.apply(format_example) for example in examples]
+    output = [format_example(example) for example in examples]
 
 
     return output
