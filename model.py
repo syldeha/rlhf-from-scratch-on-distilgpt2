@@ -183,7 +183,9 @@ def build_labels(input_ids):
 # Step 14 - mask_prompt_labels
 def mask_prompt_labels(labels, prompt_length):
     # TODO: replace the first prompt_length entries of labels with -100 and return the new list
-    labels[:prompt_length] = -100
+    for i in range(prompt_length) : 
+        if i<len(labels):
+            labels[i]=-100
 
     return labels
 
@@ -207,4 +209,13 @@ def pad_batch(sequences, pad_id):
     )
 
     return sequences.tolist()
+
+# Step 16 - make_attention_mask
+def make_attention_mask(padded_ids, pad_id):
+    # TODO: return a same-shape 0/1 mask with 1 where token != pad_id else 0
+    
+    padded_ids = torch.tensor(padded_ids)
+    mask= torch.where(padded_ids!=pad_id, 1,0)
+
+    return mask.tolist()
 
