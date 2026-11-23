@@ -303,3 +303,37 @@ def cross_entropy_loss(shift_logits, shift_labels):
 
     return -torch.mean(torch.log(selected_probs+10e-12))
 
+# Step 22 - adamw_update
+import torch
+
+def adamw_update(param, grad, state, lr, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.0):
+    """Apply one in-place AdamW step to `param` using `grad` and persistent `state`."""
+    # TODO: initialize state on first call, then update moments and apply the decoupled AdamW step
+    
+    if len(state)== 0: 
+        #initiliaze the state 
+        state["step"] = 0
+        state["m"] = torch.zeros_like(param)
+        state["v"] = torch.zeros_like(param)
+
+    #update the momentum 
+    state["step"]+=1
+    state["m"].mul_(betas[0])
+    state["m"].add_((1-betas[0])*grad)
+    state["v"].mul_(betas[1])
+    state["v"].add_((1-betas[1])*(grad**2))
+
+    #remove the bias 
+    m_bias = 1/(1-betas[0]**state['step'])
+    v_bias = 1/(1-betas[1]**state["step"])
+    m_hat = state["m"]*(m_bias)
+    v_hat = state["v"]*(v_bias)
+
+    # update the param 
+
+    param.mul_((1-lr*weight_decay))
+    param.add_(-(lr*m_hat)/(v_hat**0.5+eps))
+
+
+    return param
+
