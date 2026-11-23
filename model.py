@@ -219,3 +219,32 @@ def make_attention_mask(padded_ids, pad_id):
 
     return mask.tolist()
 
+# Step 17 - collate_lm_batch
+def collate_lm_batch(batch, pad_id):
+    # TODO: pad input_ids and labels, build attention mask, return dict of LongTensors
+    
+    # create separate list
+    inputs_ids = [torch.tensor(example['input_ids']) for example in batch]
+    labels = [torch.tensor(example['labels']) for example in batch]
+
+    # apply the padding 
+    inputs_ids = torch.nn.utils.rnn.pad_sequence(
+        inputs_ids, 
+        batch_first = True, 
+        padding_value = pad_id
+    )
+    # create the attention mask according to the padding
+    attention_mask = torch.where(inputs_ids!=pad_id,1,0)
+    labels =torch.nn.utils.rnn.pad_sequence(
+        labels, 
+        batch_first=True, 
+        padding_value=-100
+    ) 
+    #  return labels , attention_mask
+
+    return {
+        "labels" : labels , 
+        "input_ids" : inputs_ids.to(dtype = torch.long), 
+        "attention_mask" : attention_mask
+    }
+
