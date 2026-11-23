@@ -120,3 +120,28 @@ def top_p_filter(logits, p):
 
     return output
 
+# Step 9 - build_synthetic_instruction_dataset
+def build_synthetic_instruction_dataset():
+    return [
+        {
+            "prompt": "Translate 'hello' to French.",
+            "response": "Bonjour."
+        },
+        {
+            "prompt": "What is 2 + 2?",
+            "response": "2 + 2 equals 4."
+        },
+        {
+            "prompt": "Name the capital of France.",
+            "response": "The capital of France is Paris."
+        },
+        {
+            "prompt": "Write a short greeting.",
+            "response": "Hello! I hope you are having a great day."
+        },
+        {
+            "prompt": "What color is the sky on a clear day?",
+            "response": "The sky is typically blue on a clear day."
+        }
+    ]
+
