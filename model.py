@@ -337,3 +337,13 @@ def adamw_update(param, grad, state, lr, betas=(0.9, 0.999), eps=1e-8, weight_de
 
     return param
 
+# Step 23 - linear_warmup_schedule
+def linear_warmup_schedule(step, warmup_steps):
+    # TODO: return a linear warmup multiplier in [0, 1] given the current step and warmup window.
+    # linear increasing from 0 to the warmup_step 
+    # linear decreasing from that step to zero 
+    if warmup_steps==0 : 
+        return 1 
+
+    return min(step, warmup_steps)/warmup_steps
+
