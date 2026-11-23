@@ -23,3 +23,36 @@ def load_distilgpt2_model(model_name="sshleifer/tiny-gpt2"):
 
     return model
 
+# Step 3 - set_pad_token_to_eos
+def set_pad_token_to_eos(tokenizer):
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    return tokenizer
+
+# Step 4 - generate_and_decode
+def generate_and_decode(model, tokenizer, prompt, max_new_tokens=8):
+    # TODO: tokenize prompt, generate continuation greedily, decode and return as a string
+    # if tokenizer.pad_token is None : 
+    #     tokenizer.pad_token = tokenizer.eos_token
+
+    tokenizer = set_pad_token_to_eos(tokenizer)
+    inputs = tokenizer(
+        prompt, return_tensors = 'pt'
+    )
+    inputs = {
+        k : v.to(model.device)
+        for k , v in inputs.items()
+    }
+
+    with torch.no_grad() : 
+
+        output = model.generate(
+        **inputs , max_new_tokens=max_new_tokens, 
+        pad_token_id=tokenizer.pad_token_id
+    )
+
+    response = tokenizer.decode(
+        output[0, inputs["input_ids"].shape[1]:] , skip_special_tokens=True
+    )
+    return response
+
