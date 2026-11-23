@@ -94,3 +94,29 @@ def top_k_filter(logits, k):
     
     return logits
 
+# Step 8 - top_p_filter
+def top_p_filter(logits, p):
+    # TODO: mask logits outside the smallest cumulative-probability nucleus of size p.
+    logits = torch.tensor(logits)
+    probats = torch.softmax(logits, dim=-1)
+    sorted_probs, sorted_index = torch.sort(probats, dim=-1, descending=True)
+
+    #apply the cumsum 
+    cum_probs = torch.cumsum(sorted_probs, dim=-1)
+
+    position = (cum_probs<p).sum(dim=-1, keepdim=True)+1 # (batch_size, 1)
+
+    # build the mask 
+    mask = torch.arange(logits.shape[-1])[None, :]<position #(batch_size, vocab_size)
+    mask = mask.to(dtype = torch.bool)
+    sorted_logits = logits[sorted_index]
+    sorted_logits = sorted_logits.masked_fill(~mask, -torch.inf).squeeze(0)
+
+
+    output = torch.zeros_like(logits)
+
+    output = torch.scatter(output, index = sorted_index, src = sorted_logits, dim=-1)
+
+
+    return output
+
