@@ -183,11 +183,12 @@ def build_labels(input_ids):
 # Step 14 - mask_prompt_labels
 def mask_prompt_labels(labels, prompt_length):
     # TODO: replace the first prompt_length entries of labels with -100 and return the new list
-    for i in range(prompt_length) : 
-        if i<len(labels):
-            labels[i]=-100
+    output  = [-100 for i in range(len(labels))]
+    for i in range(len(labels)) : 
+        if i>=prompt_length:
+            output[i]=labels[i]
 
-    return labels
+    return output
 
 # Step 15 - pad_batch
 def pad_batch(sequences, pad_id):
