@@ -286,3 +286,20 @@ def shift_logits_and_labels(logits, labels):
     
     return logits[:,:-1] , labels[:,1:]
 
+# Step 21 - cross_entropy_loss
+import torch
+import torch.nn.functional as F
+
+def cross_entropy_loss(shift_logits, shift_labels):
+    """Mean next-token cross-entropy, ignoring label positions equal to -100."""
+    # TODO: reduce (B, T-1, V) logits and (B, T-1) labels to a scalar loss tensor.
+    # detect the position -100
+    i,j = torch.where(shift_labels!=-100)
+    selected_logits = shift_logits[i,j] # select the valid index 
+    selected_labels  = shift_labels[i,j]
+    selected_probs= torch.softmax(selected_logits, dim=-1)
+    # select the right position 
+    selected_probs = torch.gather(selected_probs, dim=-1, index =selected_labels.unsqueeze(-1)).squeeze(-1)
+
+    return -torch.mean(torch.log(selected_probs+10e-12))
+
