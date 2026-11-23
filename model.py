@@ -154,3 +154,22 @@ def format_example(example):
 
     return s
 
+# Step 11 - apply_template
+def apply_template(examples):
+    # TODO: apply format_example to each item in examples and return the list of strings.
+    output = [example.apply(format_example) for example in examples]
+
+
+    return output
+
+# Step 12 - tokenize_example
+def tokenize_example(tokenizer, text, max_length=64):
+    # TODO: encode `text` with truncation at max_length, no padding, return list[int]
+    
+    return tokenizer.encode(
+        text,
+        truncation=True,
+        max_length=max_length,
+        padding=False
+    )
+
