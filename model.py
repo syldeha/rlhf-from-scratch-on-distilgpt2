@@ -67,3 +67,16 @@ def greedy_decode(logits):
 
     return index.item()
 
+# Step 6 - sample_with_temperature
+def sample_with_temperature(logits, temperature):
+    # TODO: rescale logits by temperature, softmax, and sample one token id
+    if temperature<=0 : 
+        return torch.argmax(logits).item()
+    else : 
+        logits = logits/temperature
+
+        # compute the softmax
+        probs = torch.softmax(logits, dim=-1)
+
+        return torch.multinomial(probs, num_samples=1).item()
+
