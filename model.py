@@ -261,3 +261,22 @@ def iterate_minibatches(examples, batch_size, seed=0):
     for start in range(0, len(shuffled), batch_size):
         yield shuffled[start:start + batch_size]
 
+# Step 19 - train_val_split
+def train_val_split(examples, val_ratio=0.2, seed=0):
+    generator = torch.Generator().manual_seed(seed)
+
+    idx = torch.randperm(
+        len(examples), generator=generator
+    ).tolist()
+
+    # Shuffle examples
+    shuffled = [examples[i] for i in idx]
+
+    # Split
+    n_train = len(examples) - int(val_ratio * len(examples))
+
+    train = shuffled[:n_train]
+    val = shuffled[n_train:]
+
+    return train, val
+
