@@ -553,3 +553,47 @@ def pairwise_accuracy(chosen_reward, rejected_reward):
     
     return (chosen_reward>rejected_reward).to(dtype=torch.float).mean()
 
+# Step 40 - reward_train_step
+import torch
+
+def reward_train_step(model, reward_head, batch, optimizer):
+    # TODO: forward chosen+rejected, score last token, compute loss/acc, step optimizer
+    
+    # where are the weights 
+    weight = reward_head.weight
+    bias  = reward_head.bias
+    chosen_input_ids = batch["chosen_input_ids"]
+    chosen_attention_mask = batch["chosen_attention_mask"] #(B,T)
+    rejected_input_ids = batch["rejected_input_ids"]
+    rejected_attention_mask = batch['rejected_attention_mask']
+
+    optimizer.zero_grad()
+
+    # predict for each entry and compute the reward 
+    last_position_chosen = chosen_attention_mask.long().sum(-1, keepdim=True)-1 # (B,1)
+    rows = torch.arange(chosen_input_ids.shape[0])
+    chosen_reward = reward_head_forward(
+        model(
+            input_ids = chosen_input_ids, 
+            attention_mask = chosen_attention_mask, 
+        )[rows, last_position_chosen] , weight, bias 
+    )  
+    last_position_rejected = rejected_attention_mask.long().sum(-1, keepdim=True)-1 #(B,1)
+    
+    rejected_reward = reward_head_forward(
+        model (
+            input_ids = rejected_input_ids, 
+            attention_mask = rejected_attention_mask, 
+        )[rows, last_position_rejected], weight , bias 
+    )
+
+    # compute the loss and accuracy 
+    loss = pairwise_reward_loss(chosen_reward , rejected_reward)
+    accuracy = pairwise_accuracy(chosen_reward, rejected_reward)
+    loss.backward()
+    optimizer.step()
+    return {
+        "loss" :loss.item() , 
+        "accuracy": accuracy.item()
+    }
+
