@@ -461,6 +461,9 @@ def freeze_base_params(model):
     
     for name,p in model.named_parameters() : 
         p.requires_grad=False
+    for name ,p in model.named_parameters() : 
+        if "A" in name or "B" in name : 
+            p.requires_grad=True
 
 
     return model
