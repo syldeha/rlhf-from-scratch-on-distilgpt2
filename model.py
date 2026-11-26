@@ -487,3 +487,31 @@ def merge_lora(base_weight, lora_a, lora_b, scaling):
 
     return base_weight + scaling*(lora_b@lora_a)
 
+# Step 34 - build_synthetic_preference_dataset
+def build_synthetic_preference_dataset(num_examples=8, seed=0):
+    # TODO: return a list of {'prompt','chosen','rejected'} dicts of length num_examples.
+    examples = []
+    for i in range(num_examples):
+        a = i + 1
+        b = 3
+        total = a + b
+
+        examples.append({
+            "prompt": f"What is {a} + {b}?",
+            "chosen": f"The answer is {total}.",
+            "rejected": f"The answer is {total + 1}.",
+        })
+
+
+    return examples
+
+# Step 35 - format_preference
+def format_preference(example):
+    # TODO: return a dict with 'chosen_text' and 'rejected_text' built from the prompt and each answer.
+    
+    
+    return {
+        "chosen_text" : example['prompt'] +" " + example["chosen"] , 
+        "rejected_text" : example["prompt"] + " "+ example["rejected"]
+    }
+
