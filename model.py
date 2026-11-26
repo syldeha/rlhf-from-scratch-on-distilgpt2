@@ -536,3 +536,11 @@ def pairwise_reward_loss(chosen_reward, rejected_reward):
 
     return torch.mean(-torch.log(torch.sigmoid(chosen_reward-rejected_reward)))
 
+# Step 38 - reward_bce_loss
+import numpy as np
+
+def reward_bce_loss(chosen_reward, rejected_reward):
+    # TODO: BCE-style reward loss with chosen as positives and rejected as negatives.
+    eps = 10e-12
+    return np.mean(np.logaddexp(0,-chosen_reward)+np.logaddexp(0,rejected_reward))/2
+
