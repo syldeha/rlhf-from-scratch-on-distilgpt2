@@ -515,3 +515,13 @@ def format_preference(example):
         "rejected_text" : example["prompt"] + " "+ example["rejected"]
     }
 
+# Step 36 - reward_head_forward
+import torch
+
+def reward_head_forward(hidden_state, weight, bias):
+    """Map a final hidden state to a scalar reward via a linear projection."""
+    # TODO: project hidden_state (B, D) through weight (D,) plus scalar bias to get (B,) rewards
+    
+    weight = weight.reshape(-1)
+    return torch.matmul(hidden_state , weight)+bias
+
