@@ -544,3 +544,12 @@ def reward_bce_loss(chosen_reward, rejected_reward):
     eps = 10e-12
     return np.mean(np.logaddexp(0,-chosen_reward)+np.logaddexp(0,rejected_reward))/2
 
+# Step 39 - pairwise_accuracy
+import torch
+
+def pairwise_accuracy(chosen_reward, rejected_reward):
+    """Fraction of pairs where chosen_reward > rejected_reward."""
+    # TODO: return the fraction of pairs where chosen strictly beats rejected
+    
+    return (chosen_reward>rejected_reward).to(dtype=torch.float).mean()
+
