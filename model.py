@@ -468,3 +468,14 @@ def freeze_base_params(model):
 
     return model
 
+# Step 32 - count_trainable_params
+def count_trainable_params(model):
+    # TODO: sum p.numel() over parameters with requires_grad=True
+    total = 0
+    for p in model.parameters() : 
+        if p.requires_grad==True :
+            total+=p.numel()
+
+
+    return total
+
